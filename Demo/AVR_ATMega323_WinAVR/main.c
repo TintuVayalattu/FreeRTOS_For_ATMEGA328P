@@ -158,10 +158,10 @@ and mainCOM_TEST_LED + 1 is toggles on each character Rx. */
 that all the other tasks are operating without error.  If no errors are found
 the LED is toggled.  If an error is found at any time the LED is never toggles
 again. */
-#define mainCHECK_TASK_LED				( 7 )
+#define mainCHECK_TASK_LED				( 5 )
 
 /* The period between executions of the check task. */
-#define mainCHECK_PERIOD				( ( TickType_t ) 3000 / portTICK_PERIOD_MS  )
+#define mainCHECK_PERIOD				( ( TickType_t ) 500 / portTICK_PERIOD_MS  )
 
 /* An address in the EEPROM used to count resets.  This is used to check that
 the demo application is not unexpectedly resetting. */
@@ -205,7 +205,7 @@ short main( void )
 	vStartIntegerMathTasks( tskIDLE_PRIORITY );
 	vAltStartComTestTasks( mainCOM_TEST_PRIORITY, mainCOM_TEST_BAUD_RATE, mainCOM_TEST_LED );
 	vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
-	vStartRegTestTasks();
+	//vStartRegTestTasks();
 
 	/* Create the tasks defined within this file. */
 	xTaskCreate( vErrorChecks, "Check", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );

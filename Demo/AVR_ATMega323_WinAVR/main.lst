@@ -1,0 +1,233 @@
+   1               		.file	"main.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               	.global	vApplicationIdleHook
+  18               	vApplicationIdleHook:
+  19               	.LFB6:
+  20               	.LM1:
+  21               	/* prologue: function */
+  22               	/* frame size = 0 */
+  23               	.LM2:
+  24 0000 0E94 0000 		call vCoRoutineSchedule
+  25               	/* epilogue start */
+  26               	.LM3:
+  27 0004 0895      		ret
+  28               	.LFE6:
+  30               		.data
+  31               	.LC0:
+  32 0000 4368 6563 		.string	"Check"
+  32      6B00 
+  33               		.text
+  34               	.global	main
+  36               	main:
+  37               	.LFB2:
+  38               	.LM4:
+  39 0006 EF92      		push r14
+  40 0008 FF92      		push r15
+  41 000a 0F93      		push r16
+  42 000c DF93      		push r29
+  43 000e CF93      		push r28
+  44 0010 0F92      		push __tmp_reg__
+  45 0012 CDB7      		in r28,__SP_L__
+  46 0014 DEB7      		in r29,__SP_H__
+  47               	/* prologue: function */
+  48               	/* frame size = 1 */
+  49               	.LBB6:
+  50               	.LBB7:
+  51               	.LM5:
+  52 0016 CE01      		movw r24,r28
+  53 0018 0196      		adiw r24,1
+  54 001a 60E5      		ldi r22,lo8(80)
+  55 001c 70E0      		ldi r23,hi8(80)
+  56 001e 41E0      		ldi r20,lo8(1)
+  57 0020 50E0      		ldi r21,hi8(1)
+  58 0022 0E94 0000 		call __eerd_block_m328p
+  59               	.LM6:
+  60 0026 6981      		ldd r22,Y+1
+  61               	.LVL0:
+  62 0028 6F5F      		subi r22,lo8(-(1))
+  63 002a 6983      		std Y+1,r22
+  64               	.LVL1:
+  65               	.LM7:
+  66 002c 80E5      		ldi r24,lo8(80)
+  67 002e 90E0      		ldi r25,hi8(80)
+  68 0030 0E94 0000 		call __eewr_byte_m328p
+  69               	.LBE7:
+  70               	.LBE6:
+  71               	.LM8:
+  72 0034 0E94 0000 		call vParTestInitialise
+  73               	.LM9:
+  74 0038 80E0      		ldi r24,lo8(0)
+  75 003a 0E94 0000 		call vStartIntegerMathTasks
+  76               	.LM10:
+  77 003e 82E0      		ldi r24,lo8(2)
+  78 0040 40E0      		ldi r20,lo8(38400)
+  79 0042 56E9      		ldi r21,hi8(38400)
+  80 0044 60E0      		ldi r22,hlo8(38400)
+  81 0046 70E0      		ldi r23,hhi8(38400)
+  82 0048 24E0      		ldi r18,lo8(4)
+  83 004a 0E94 0000 		call vAltStartComTestTasks
+  84               	.LM11:
+  85 004e 82E0      		ldi r24,lo8(2)
+  86 0050 0E94 0000 		call vStartPolledQueueTasks
+  87               	.LM12:
+  88 0054 80E0      		ldi r24,lo8(gs(vErrorChecks))
+  89 0056 90E0      		ldi r25,hi8(gs(vErrorChecks))
+  90 0058 60E0      		ldi r22,lo8(.LC0)
+  91 005a 70E0      		ldi r23,hi8(.LC0)
+  92 005c 45E5      		ldi r20,lo8(85)
+  93 005e 50E0      		ldi r21,hi8(85)
+  94 0060 20E0      		ldi r18,lo8(0)
+  95 0062 30E0      		ldi r19,hi8(0)
+  96 0064 03E0      		ldi r16,lo8(3)
+  97 0066 EE24      		clr r14
+  98 0068 FF24      		clr r15
+  99 006a 0E94 0000 		call xTaskCreate
+ 100               	.LM13:
+ 101 006e 83E0      		ldi r24,lo8(3)
+ 102 0070 0E94 0000 		call vStartFlashCoRoutines
+ 103               	.LM14:
+ 104 0074 0E94 0000 		call vTaskStartScheduler
+ 105               	.LM15:
+ 106 0078 80E0      		ldi r24,lo8(0)
+ 107 007a 90E0      		ldi r25,hi8(0)
+ 108               	/* epilogue start */
+ 109 007c 0F90      		pop __tmp_reg__
+ 110 007e CF91      		pop r28
+ 111 0080 DF91      		pop r29
+ 112 0082 0F91      		pop r16
+ 113 0084 FF90      		pop r15
+ 114 0086 EF90      		pop r14
+ 115 0088 0895      		ret
+ 116               	.LFE2:
+ 119               	vErrorChecks:
+ 120               	.LFB3:
+ 121               	.LM16:
+ 122               	.LVL2:
+ 123 008a 1F93      		push r17
+ 124               	/* prologue: function */
+ 125               	/* frame size = 0 */
+ 126               	.LBB8:
+ 127               	.LBB9:
+ 128               	.LM17:
+ 129 008c 11E0      		ldi r17,lo8(1)
+ 130               	.L14:
+ 131               	.LBE9:
+ 132               	.LBE8:
+ 133               	.LM18:
+ 134 008e 84EF      		ldi r24,lo8(500)
+ 135 0090 91E0      		ldi r25,hi8(500)
+ 136               	.LVL3:
+ 137 0092 0E94 0000 		call vTaskDelay
+ 138               	.LM19:
+ 139 0096 2091 0000 		lds r18,ulDummyVariable.1942
+ 140 009a 3091 0000 		lds r19,(ulDummyVariable.1942)+1
+ 141 009e 4091 0000 		lds r20,(ulDummyVariable.1942)+2
+ 142 00a2 5091 0000 		lds r21,(ulDummyVariable.1942)+3
+ 143 00a6 DA01      		movw r26,r20
+ 144 00a8 C901      		movw r24,r18
+ 145 00aa 880F      		lsl r24
+ 146 00ac 991F      		rol r25
+ 147 00ae AA1F      		rol r26
+ 148 00b0 BB1F      		rol r27
+ 149 00b2 820F      		add r24,r18
+ 150 00b4 931F      		adc r25,r19
+ 151 00b6 A41F      		adc r26,r20
+ 152 00b8 B51F      		adc r27,r21
+ 153 00ba 8093 0000 		sts ulDummyVariable.1942,r24
+ 154 00be 9093 0000 		sts (ulDummyVariable.1942)+1,r25
+ 155 00c2 A093 0000 		sts (ulDummyVariable.1942)+2,r26
+ 156 00c6 B093 0000 		sts (ulDummyVariable.1942)+3,r27
+ 157               	.LBB14:
+ 158               	.LM20:
+ 159 00ca 0E94 0000 		call xAreIntegerMathsTaskStillRunning
+ 160               	.LBB10:
+ 161 00ce 8130      		cpi r24,lo8(1)
+ 162 00d0 01F0      		breq .L6
+ 163               	.LM21:
+ 164 00d2 1093 0000 		sts xErrorHasOccurred.1949,r17
+ 165               	.L6:
+ 166               	.LBE10:
+ 167               	.LM22:
+ 168 00d6 0E94 0000 		call xAreComTestTasksStillRunning
+ 169               	.LBB11:
+ 170 00da 8130      		cpi r24,lo8(1)
+ 171 00dc 01F0      		breq .L7
+ 172               	.LM23:
+ 173 00de 1093 0000 		sts xErrorHasOccurred.1949,r17
+ 174               	.L7:
+ 175               	.LBE11:
+ 176               	.LM24:
+ 177 00e2 0E94 0000 		call xArePollingQueuesStillRunning
+ 178               	.LBB12:
+ 179 00e6 8130      		cpi r24,lo8(1)
+ 180 00e8 01F0      		breq .L8
+ 181               	.LM25:
+ 182 00ea 1093 0000 		sts xErrorHasOccurred.1949,r17
+ 183               	.L8:
+ 184               	.LBE12:
+ 185               	.LM26:
+ 186 00ee 0E94 0000 		call xAreRegTestTasksStillRunning
+ 187               	.LBB13:
+ 188 00f2 8130      		cpi r24,lo8(1)
+ 189 00f4 01F0      		breq .L9
+ 190               	.LM27:
+ 191 00f6 1093 0000 		sts xErrorHasOccurred.1949,r17
+ 192               	.L9:
+ 193               	.LM28:
+ 194 00fa 8091 0000 		lds r24,xErrorHasOccurred.1949
+ 195 00fe 8823      		tst r24
+ 196 0100 01F4      		brne .L14
+ 197               	.LM29:
+ 198 0102 85E0      		ldi r24,lo8(5)
+ 199 0104 0E94 0000 		call vParTestToggleLED
+ 200 0108 00C0      		rjmp .L14
+ 201               	.LBE13:
+ 202               	.LBE14:
+ 203               	.LFE3:
+ 205               		.data
+ 208               	ulDummyVariable.1942:
+ 209 0006 03        		.byte	3
+ 210 0007 00        		.byte	0
+ 211 0008 00        		.byte	0
+ 212 0009 00        		.byte	0
+ 213               		.lcomm xErrorHasOccurred.1949,1
+ 254               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Tintu\AppData\Local\Temp/cc3VyDUf.s:2      *ABS*:0000003f __SREG__
+C:\Users\Tintu\AppData\Local\Temp/cc3VyDUf.s:3      *ABS*:0000003e __SP_H__
+C:\Users\Tintu\AppData\Local\Temp/cc3VyDUf.s:4      *ABS*:0000003d __SP_L__
+C:\Users\Tintu\AppData\Local\Temp/cc3VyDUf.s:5      *ABS*:00000034 __CCP__
+C:\Users\Tintu\AppData\Local\Temp/cc3VyDUf.s:6      *ABS*:00000000 __tmp_reg__
+C:\Users\Tintu\AppData\Local\Temp/cc3VyDUf.s:7      *ABS*:00000001 __zero_reg__
+C:\Users\Tintu\AppData\Local\Temp/cc3VyDUf.s:18     .text:00000000 vApplicationIdleHook
+C:\Users\Tintu\AppData\Local\Temp/cc3VyDUf.s:36     .text:00000006 main
+C:\Users\Tintu\AppData\Local\Temp/cc3VyDUf.s:119    .text:0000008a vErrorChecks
+C:\Users\Tintu\AppData\Local\Temp/cc3VyDUf.s:208    .data:00000006 ulDummyVariable.1942
+                             .bss:00000000 xErrorHasOccurred.1949
+
+UNDEFINED SYMBOLS
+vCoRoutineSchedule
+__eerd_block_m328p
+__eewr_byte_m328p
+vParTestInitialise
+vStartIntegerMathTasks
+vAltStartComTestTasks
+vStartPolledQueueTasks
+xTaskCreate
+vStartFlashCoRoutines
+vTaskStartScheduler
+vTaskDelay
+xAreIntegerMathsTaskStillRunning
+xAreComTestTasksStillRunning
+xArePollingQueuesStillRunning
+xAreRegTestTasksStillRunning
+vParTestToggleLED
+__do_copy_data
+__do_clear_bss

@@ -100,14 +100,13 @@ Changes from V2.6.0
 #define serBAUD_DIV_CONSTANT			( ( unsigned long ) 16 )
 
 /* Constants for writing to UCSRB. */
-#define serRX_INT_ENABLE				( ( unsigned char ) 0x80 )
-#define serRX_ENABLE					( ( unsigned char ) 0x10 )
-#define serTX_ENABLE					( ( unsigned char ) 0x08 )
-#define serTX_INT_ENABLE				( ( unsigned char ) 0x20 )
+#define serRX_INT_ENABLE				( ( unsigned char ) (1<<RXCIE0) )
+#define serRX_ENABLE					( ( unsigned char ) (1<<RXEN0) )
+#define serTX_ENABLE					( ( unsigned char ) (1<<TXEN0) )
+#define serTX_INT_ENABLE				( ( unsigned char ) (1<<UDRIE0) )
 
 /* Constants for writing to UCSRC. */
-#define serUCSRC_SELECT					( ( unsigned char ) 0x80 )
-#define serEIGHT_DATA_BITS				( ( unsigned char ) 0x06 )
+#define serEIGHT_DATA_BITS				( ( unsigned char ) (1<<UCSZ01)|(1<<UCSZ00) )
 
 static QueueHandle_t xRxedChars; 
 static QueueHandle_t xCharsForTx; 
@@ -116,9 +115,9 @@ static QueueHandle_t xCharsForTx;
 {															\
 	unsigned char ucByte;								\
 															\
-	ucByte = UCSRB;											\
+	ucByte = UCSR0B;											\
 	ucByte |= serTX_INT_ENABLE;								\
-	UCSRB = ucByte;											\
+	UCSR0B = ucByte;											\
 }																				
 /*-----------------------------------------------------------*/
 
@@ -126,9 +125,9 @@ static QueueHandle_t xCharsForTx;
 {															\
 	unsigned char ucInByte;								\
 															\
-	ucInByte = UCSRB;										\
+	ucInByte = UCSR0B;										\
 	ucInByte &= ~serTX_INT_ENABLE;							\
-	UCSRB = ucInByte;										\
+	UCSR0B = ucInByte;										\
 }
 /*-----------------------------------------------------------*/
 
@@ -149,18 +148,18 @@ unsigned char ucByte;
 
 		/* Set the baud rate. */	
 		ucByte = ( unsigned char ) ( ulBaudRateCounter & ( unsigned long ) 0xff );	
-		UBRRL = ucByte;
+		UBRR0L = ucByte;
 
 		ulBaudRateCounter >>= ( unsigned long ) 8;
 		ucByte = ( unsigned char ) ( ulBaudRateCounter & ( unsigned long ) 0xff );	
-		UBRRH = ucByte;
+		UBRR0H = ucByte;
 
 		/* Enable the Rx interrupt.  The Tx interrupt will get enabled
 		later. Also enable the Rx and Tx. */
-		UCSRB = ( serRX_INT_ENABLE | serRX_ENABLE | serTX_ENABLE );
+		UCSR0B = ( serRX_INT_ENABLE | serRX_ENABLE | serTX_ENABLE );
 
 		/* Set the data bits to 8. */
-		UCSRC = ( serUCSRC_SELECT | serEIGHT_DATA_BITS );
+		UCSR0C = serEIGHT_DATA_BITS ;
 	}
 	portEXIT_CRITICAL();
 	
@@ -219,15 +218,15 @@ unsigned char ucByte;
 	portENTER_CRITICAL();
 	{
 		vInterruptOff();
-		ucByte = UCSRB;
+		ucByte = UCSR0B;
 		ucByte &= ~serRX_INT_ENABLE;
-		UCSRB = ucByte;
+		UCSR0B = ucByte;
 	}
 	portEXIT_CRITICAL();
 }
 /*-----------------------------------------------------------*/
 
-SIGNAL( SIG_UART_RECV )
+SIGNAL( USART_RX_vect )
 {
 signed char cChar;
 signed portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
@@ -235,7 +234,7 @@ signed portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 	/* Get the character and post it on the queue of Rxed characters.
 	If the post causes a task to wake force a context switch as the woken task
 	may have a higher priority than the task we have interrupted. */
-	cChar = UDR;
+	cChar = UDR0;
 
 	xQueueSendFromISR( xRxedChars, &cChar, &xHigherPriorityTaskWoken );
 
@@ -246,14 +245,14 @@ signed portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 }
 /*-----------------------------------------------------------*/
 
-SIGNAL( SIG_UART_DATA )
+SIGNAL( USART_UDRE_vect )
 {
 signed char cChar, cTaskWoken;
 
 	if( xQueueReceiveFromISR( xCharsForTx, &cChar, &cTaskWoken ) == pdTRUE )
 	{
 		/* Send the next character queued for Tx. */
-		UDR = cChar;
+		UDR0 = cChar;
 	}
 	else
 	{
